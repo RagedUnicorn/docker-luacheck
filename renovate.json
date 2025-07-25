@@ -3,6 +3,10 @@
   "extends": [
     "config:base"
   ],
+  "ignorePaths": [
+    "docker-compose.yml",
+    "docker-compose.*.yml"
+  ],
   "timezone": "Europe/Zurich",
   "schedule": ["every monday"],
   "labels": ["dependencies", "renovate"],
