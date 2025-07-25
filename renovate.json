@@ -4,8 +4,10 @@
     "config:base"
   ],
   "ignorePaths": [
+    "docker-compose",
     "docker-compose.yml",
-    "docker-compose.*.yml"
+    "docker-compose.*.yml",
+    "examples/docker-compose.*.yml"
   ],
   "timezone": "Europe/Zurich",
   "schedule": ["every monday"],
