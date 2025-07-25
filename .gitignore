@@ -20,10 +20,7 @@ target/
 
 # Test artifacts
 test-results/
-coverage/
-*.tap
-*.xml
-*.json
+
 examples/reports/
 
 # Local environment

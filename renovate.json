@@ -1,0 +1,43 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "timezone": "Europe/Zurich",
+  "schedule": ["every monday"],
+  "labels": ["dependencies", "renovate"],
+  "packageRules": [
+    {
+      "description": "Automatically merge minor and patch updates for Alpine",
+      "matchPackageNames": ["alpine"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "description": "Group all non-major updates together",
+      "matchPackagePatterns": ["*"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch"
+    }
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": [
+        "FROM alpine:(?<currentValue>\\S+)\\s+AS"
+      ],
+      "depNameTemplate": "alpine",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": [
+        "ARG LUACHECK_VERSION=(?<currentValue>\\S+)"
+      ],
+      "depNameTemplate": "luacheck",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v?(?<version>.*)$"
+    }
+  ]
+}
