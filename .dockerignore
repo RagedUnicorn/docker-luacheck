@@ -1,0 +1,30 @@
+# Git files
+.git
+.gitignore
+
+# Documentation
+README.md
+LICENSE
+docs/
+
+# Build artifacts
+*.log
+*.tmp
+.DS_Store
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test files
+test/
+tests/
+*.test
+*.spec
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml

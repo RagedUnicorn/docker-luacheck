@@ -1,0 +1,35 @@
+# Packages
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# OS generated files
+.DS_Store
+ehthumbs.db
+Icon
+Thumbs.db
+
+# java/maven/intellij
+target/
+.idea/
+*.iml
+
+# Media files
+media/
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.mp3
+*.wav
+*.webm
+
+# IDE files
+.vscode/
+*.swp
+*.swo
