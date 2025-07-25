@@ -3,6 +3,7 @@
 ############################################
 FROM alpine:3.22.1 AS build
 
+# renovate: datasource=github-releases depName=lunarmodules/luacheck
 ARG LUACHECK_VERSION=1.2.0
 ARG PREFIX=/opt/luacheck
 
