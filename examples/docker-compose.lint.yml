@@ -1,0 +1,54 @@
+# Docker Compose configuration for running Luacheck linting
+#
+# Usage:
+#   docker-compose -f docker-compose.lint.yml up lint-project
+#   docker-compose -f docker-compose.lint.yml run lint-strict
+#
+# This will run Luacheck with various configurations for linting Lua code
+
+services:
+  # Lint entire project with default settings
+  lint-project:
+    image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}
+    container_name: luacheck-lint-project
+    volumes:
+      - ../:/workspace:ro
+    working_dir: /workspace
+    command: ["."]
+
+  # Lint with strict settings
+  lint-strict:
+    image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}
+    container_name: luacheck-lint-strict
+    volumes:
+      - ../:/workspace:ro
+    working_dir: /workspace
+    command: ["--no-unused", "--no-redefined", "--no-global", "."]
+
+  # Lint for Lua 5.3 standard
+  lint-lua53:
+    image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}
+    container_name: luacheck-lint-lua53
+    volumes:
+      - ../:/workspace:ro
+    working_dir: /workspace
+    command: ["--std", "lua53", "."]
+
+  # Lint for Lua 5.1 standard
+  lint-lua51:
+    image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}
+    container_name: luacheck-lint-lua51
+    volumes:
+      - ../:/workspace:ro
+    working_dir: /workspace
+    command: ["--std", "lua51", "."]
+
+  # Lint with configuration file
+  lint-with-config:
+    image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}
+    container_name: luacheck-lint-config
+    volumes:
+      - ../:/workspace:ro
+      - ../.luacheckrc:/workspace/.luacheckrc:ro
+    working_dir: /workspace
+    command: ["--config", ".luacheckrc", "."]

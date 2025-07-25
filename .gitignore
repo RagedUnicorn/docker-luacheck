@@ -1,35 +1,34 @@
-# Packages
-*.7z
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
-
-# OS generated files
-.DS_Store
-ehthumbs.db
-Icon
-Thumbs.db
-
-# java/maven/intellij
-target/
+# IDE
 .idea/
-*.iml
-
-# Media files
-media/
-*.mp4
-*.avi
-*.mov
-*.mkv
-*.mp3
-*.wav
-*.webm
-
-# IDE files
 .vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS
+.DS_Store
+Thumbs.db
 *.swp
 *.swo
+*~
+
+# Build artifacts
+*.log
+build/
+dist/
+target/
+
+# Test artifacts
+test-results/
+coverage/
+*.tap
+*.xml
+*.json
+examples/reports/
+
+# Local environment
+.env.local
+.env.*.local
+
+# Docker
+.docker/

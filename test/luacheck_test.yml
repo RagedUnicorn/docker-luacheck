@@ -1,0 +1,46 @@
+schemaVersion: 2.0.0
+
+fileExistenceTests:
+  - name: 'Luacheck binary exists'
+    path: '/usr/local/bin/luacheck'
+    shouldExist: true
+    permissions: '-rwxr-xr-x'
+
+  - name: 'Workspace directory exists'
+    path: '/workspace'
+    shouldExist: true
+    permissions: 'drwxr-xr-x'
+
+commandTests:
+  - name: 'Luacheck is executable'
+    command: 'luacheck'
+    args: ['--version']
+    exitCode: 0
+
+  - name: 'Luacheck help command'
+    command: 'luacheck'
+    args: ['--help']
+    exitCode: 0
+    expectedOutput:
+      - 'Usage: luacheck'
+
+  - name: 'Working directory is set correctly'
+    command: 'pwd'
+    exitCode: 0
+    expectedOutput:
+      - '/workspace'
+
+  - name: 'Non-root user exists'
+    command: 'id'
+    args: ['luacheck']
+    exitCode: 0
+    expectedOutput:
+      - 'uid='
+      - 'luacheck'
+
+  - name: 'Lua runtime is available'
+    command: 'lua5.3'
+    args: ['-v']
+    exitCode: 0
+    expectedOutput:
+      - 'Lua 5.3'

@@ -1,0 +1,59 @@
+# Docker Compose configuration for CI/CD integration with Luacheck
+#
+# Usage:
+#   docker-compose -f docker-compose.ci.yml up ci-junit
+#   docker-compose -f docker-compose.ci.yml run ci-check
+#
+# This will run Luacheck in CI mode with various output formats
+
+services:
+  # Generate JUnit XML report for CI systems
+  ci-junit:
+    image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}
+    container_name: luacheck-ci-junit
+    volumes:
+      - ../:/workspace:ro
+      - ./reports:/reports
+    working_dir: /workspace
+    entrypoint: /bin/sh
+    command: ["-c", "luacheck --formatter JUnit . > /reports/luacheck-junit.xml"]
+
+  # Generate plain report for processing
+  ci-plain:
+    image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}
+    container_name: luacheck-ci-plain
+    volumes:
+      - ../:/workspace:ro
+      - ./reports:/reports
+    working_dir: /workspace
+    entrypoint: /bin/sh
+    command: ["-c", "luacheck --formatter plain . > /reports/luacheck-report.txt"]
+
+  # Simple CI check with exit code
+  ci-check:
+    image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}
+    container_name: luacheck-ci-check
+    volumes:
+      - ../:/workspace:ro
+    working_dir: /workspace
+    command: ["--quiet", "--codes", "."]
+
+  # Generate TAP format for test harnesses
+  ci-tap:
+    image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}
+    container_name: luacheck-ci-tap
+    volumes:
+      - ../:/workspace:ro
+      - ./reports:/reports
+    working_dir: /workspace
+    entrypoint: /bin/sh
+    command: ["-c", "luacheck --formatter TAP . > /reports/luacheck-tap.tap"]
+
+  # Check with specific exit codes for different severity levels
+  ci-warnings-only:
+    image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}
+    container_name: luacheck-ci-warnings
+    volumes:
+      - ../:/workspace:ro
+    working_dir: /workspace
+    command: ["--no-self", "."]

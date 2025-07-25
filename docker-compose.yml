@@ -1,0 +1,22 @@
+# Docker Compose configuration for running Luacheck
+#
+# Usage:
+#   docker-compose run --rm luacheck
+#   docker-compose run --rm luacheck src/
+#   docker-compose run --rm luacheck --help
+#
+# This will run Luacheck on your codebase with default settings
+
+services:
+  luacheck:
+    image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}
+    container_name: luacheck
+    volumes:
+      - ./:/workspace:ro
+    working_dir: /workspace
+    # Override command to lint current directory by default
+    command: ["."]
+    environment:
+      - TERM=xterm-256color
+    tty: true
+    init: true

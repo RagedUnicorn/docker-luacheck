@@ -1,0 +1,29 @@
+# Docker Compose configuration for development
+#
+# This file is used for building and testing the Luacheck image locally
+#
+# Usage:
+#   docker-compose -f docker-compose.dev.yml build
+#   docker-compose -f docker-compose.dev.yml run --rm luacheck-dev
+#
+# This will drop you into a shell where you can manually run luacheck commands
+
+services:
+  luacheck-dev:
+    build: .
+    image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}-dev
+    volumes:
+      - ./examples:/workspace
+      - ./test:/test:ro
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    # Override entrypoint to get a shell
+    entrypoint: /bin/sh
+    labels:
+      org.opencontainers.image.title: "Luacheck on Alpine Linux (Dev)"
+      org.opencontainers.image.description: "Luacheck development environment for testing and debugging"
+      org.opencontainers.image.vendor: "ragedunicorn"
+    environment:
+      - TERM=xterm-256color
+      - PS1=\[\033[1;36m\]luacheck-dev\[\033[0m\]:\w\$

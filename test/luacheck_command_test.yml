@@ -1,0 +1,58 @@
+schemaVersion: 2.0.0
+
+commandTests:
+  - name: 'Test linting a simple Lua file'
+    setup: [
+      ['sh', '-c', 'echo "print(\"Hello World\")" > /tmp/test.lua']
+    ]
+    command: 'luacheck'
+    args: ['--no-color', '/tmp/test.lua']
+    exitCode: 0
+    expectedOutput:
+      - 'OK'
+      - 'Total: 0 warnings / 0 errors'
+
+  - name: 'Test detecting unused variable'
+    setup: [
+      ['sh', '-c', 'echo "local unused = 42" > /tmp/unused.lua']
+    ]
+    command: 'luacheck'
+    args: ['--no-color', '/tmp/unused.lua']
+    exitCode: 1
+    expectedOutput:
+      - 'unused'
+      - 'warning'
+
+  - name: 'Test with no-unused flag'
+    setup: [
+      ['sh', '-c', 'echo "local unused = 42" > /tmp/nounused.lua']
+    ]
+    command: 'luacheck'
+    args: ['--no-color', '--no-unused', '/tmp/nounused.lua']
+    exitCode: 0
+    expectedOutput:
+      - 'OK'
+      - '0 warnings / 0 errors'
+
+  - name: 'Test JUnit formatter'
+    setup: [
+      ['sh', '-c', 'echo "print(\"test\")" > /tmp/junit_test.lua']
+    ]
+    command: 'luacheck'
+    args: ['--formatter', 'JUnit', '/tmp/junit_test.lua']
+    exitCode: 0
+    expectedOutput:
+      - 'xml'
+      - 'testsuite'
+
+  - name: 'Test multiple files'
+    setup: [
+      ['sh', '-c', 'echo "print(1)" > /tmp/file1.lua'],
+      ['sh', '-c', 'echo "print(2)" > /tmp/file2.lua']
+    ]
+    command: 'luacheck'
+    args: ['--no-color', '/tmp/file1.lua', '/tmp/file2.lua']
+    exitCode: 0
+    expectedOutput:
+      - 'file1.lua'
+      - 'file2.lua'

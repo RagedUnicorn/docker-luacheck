@@ -1,0 +1,20 @@
+schemaVersion: 2.0.0
+
+metadataTest:
+  labels:
+    - key: 'org.opencontainers.image.title'
+      value: 'Luacheck on Alpine Linux'
+    - key: 'org.opencontainers.image.description'
+      value: 'Lightweight Luacheck Docker image built on Alpine Linux for Lua code linting'
+    - key: 'org.opencontainers.image.vendor'
+      value: 'ragedunicorn'
+    - key: 'org.opencontainers.image.authors'
+      value: 'Michael Wiesendanger <michael.wiesendanger@gmail.com>'
+    - key: 'org.opencontainers.image.source'
+      value: 'https://github.com/RagedUnicorn/docker-luacheck'
+    - key: 'org.opencontainers.image.licenses'
+      value: 'MIT'
+  entrypoint: ['luacheck']
+  cmd: ['--help']
+  workdir: '/workspace'
+  user: 'luacheck'
