@@ -49,17 +49,10 @@ LABEL org.opencontainers.image.title="Luacheck on Alpine Linux" \
 RUN apk add --no-cache --update \
     lua5.3
 
-# Create non-root user for running luacheck
-RUN adduser -D -H -s /sbin/nologin luacheck
-
 # Copy luacheck and all dependencies from build stage
 COPY --from=build /usr/local /usr/local
 
 WORKDIR /workspace
-
-RUN chown -R luacheck:luacheck /workspace
-
-USER luacheck
 
 # Set the entrypoint to luacheck binary
 ENTRYPOINT ["luacheck"]

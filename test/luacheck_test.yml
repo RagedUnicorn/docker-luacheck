@@ -30,14 +30,6 @@ commandTests:
     expectedOutput:
       - '/workspace'
 
-  - name: 'Non-root user exists'
-    command: 'id'
-    args: ['luacheck']
-    exitCode: 0
-    expectedOutput:
-      - 'uid='
-      - 'luacheck'
-
   - name: 'Lua runtime is available'
     command: 'lua5.3'
     args: ['-v']

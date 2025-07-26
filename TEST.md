@@ -24,7 +24,6 @@ Validates:
 
 - Luacheck binary exists with correct permissions
 - Working directory `/workspace` exists and is accessible
-- Non-root user `luacheck` exists
 - Lua runtime is available
 - Core dependencies are installed
 
@@ -47,7 +46,6 @@ Validates:
 - OCI-compliant labels are present and correct
 - Container entrypoint and default command
 - Working directory configuration
-- User context (runs as luacheck user)
 
 ## Running Tests
 

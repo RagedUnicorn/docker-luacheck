@@ -20,7 +20,6 @@ This Docker image provides a lightweight Luacheck installation on Alpine Linux. 
 - **Luacheck 1.2.0**: Latest stable version
 - **Multi-stage build**: Optimized for minimal final image size
 - **Volume mounting**: Easy file input through `/workspace`
-- **Non-root execution**: Runs as dedicated user for security
 
 ## Quick Start
 

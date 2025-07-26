@@ -17,4 +17,3 @@ metadataTest:
   entrypoint: ['luacheck']
   cmd: ['--help']
   workdir: '/workspace'
-  user: 'luacheck'
