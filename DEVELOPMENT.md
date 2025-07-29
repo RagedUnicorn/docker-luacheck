@@ -84,12 +84,38 @@ After making changes, always build and test locally:
 ```bash
 # Build your changes locally
 docker build -t ragedunicorn/luacheck:test .
+```
 
+#### Running Tests (Cross-Platform)
+
+**Linux/macOS:**
+
+```bash
 # Run all tests against your local build
 LUACHECK_VERSION=test docker compose -f docker-compose.test.yml run test-all
 
 # Run specific tests during development
 LUACHECK_VERSION=test docker compose -f docker-compose.test.yml up container-test-command
+```
+
+**Windows Command Prompt:**
+
+```cmd
+# Run all tests against your local build
+set LUACHECK_VERSION=test && docker compose -f docker-compose.test.yml run test-all
+
+# Run specific tests during development
+set LUACHECK_VERSION=test && docker compose -f docker-compose.test.yml up container-test-command
+```
+
+**Windows PowerShell:**
+
+```powershell
+# Run all tests against your local build
+$env:LUACHECK_VERSION="test"; docker compose -f docker-compose.test.yml run test-all
+
+# Run specific tests during development
+$env:LUACHECK_VERSION="test"; docker compose -f docker-compose.test.yml up container-test-command
 ```
 
 **Important:** Never test against remote images - they may have different labels or configurations due to CI/CD overrides.
