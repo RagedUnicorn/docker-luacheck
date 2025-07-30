@@ -11,7 +11,7 @@
 services:
   luacheck-dev:
     build: .
-    image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}-dev
+    image: ragedunicorn/luacheck:dev
     volumes:
       - ./examples:/workspace
       - ./test:/test:ro
