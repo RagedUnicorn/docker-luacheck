@@ -1,7 +1,7 @@
 ############################################
 # Luacheck build stage
 ############################################
-FROM alpine:3.23.0 AS build
+FROM alpine:3.23.2 AS build
 
 # renovate: datasource=github-releases depName=lunarmodules/luacheck
 ARG LUACHECK_VERSION=1.2.0
@@ -28,7 +28,7 @@ RUN luarocks-5.3 install luacheck ${LUACHECK_VERSION}
 ############################################
 # Runtime stage
 ############################################
-FROM alpine:3.23.0
+FROM alpine:3.23.2
 
 ARG BUILD_DATE
 ARG VERSION
