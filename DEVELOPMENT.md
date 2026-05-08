@@ -23,8 +23,9 @@ docker-luacheck/
 ├── examples/               # Example Docker Compose configurations
 │   ├── docker-compose.lint.yml
 │   ├── docker-compose.ci.yml
-│   ├── sample.lua
-│   └── test.lua
+│   └── lua/                # Sample Lua files for linting demos
+│       ├── sample.lua
+│       └── test.lua
 ├── test/                   # Container Structure Tests
 │   ├── luacheck_test.yml
 │   ├── luacheck_command_test.yml
@@ -48,7 +49,7 @@ docker compose -f docker-compose.dev.yml run --rm luacheck-dev
 # Inside the container, you can run luacheck manually
 luacheck --version
 luacheck --help
-luacheck /examples/sample.lua
+luacheck /examples/lua/sample.lua
 ```
 
 The development mode:
