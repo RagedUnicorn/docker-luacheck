@@ -24,6 +24,8 @@ docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest script.lua
 - 🔍 **Comprehensive analysis**: Detects undefined globals, unused variables, unreachable code, and more
 - 🏗️ **Multi-platform**: Supports linux/amd64 and linux/arm64
 - ⚡ **Fast**: Pure Lua implementation with no external dependencies
+- 🧵 **Parallel checking**: Bundled `lanes` package enables `luacheck -j N` for large codebases
+- 🔒 **Runs as non-root**: Executes as `nobody` for security (required by `lanes`)
 
 ## Supported Standards
 
@@ -71,6 +73,25 @@ docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest \
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest \
   --config .luacheckrc .
 ```
+
+### Parallel checking on large codebases
+
+```bash
+docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest -j 4 .
+```
+
+Set `-j` to the number of CPU cores to use. Backed by the bundled `lanes` package.
+
+## File Permissions
+
+The container runs as `nobody` (uid 65534). Files mounted at `/workspace` must be readable by that uid — world-readable files (mode `644`, the typical default) work out of the box. If your files are more restrictive, run as your own user:
+
+```bash
+docker run --rm --user $(id -u):$(id -g) \
+  -v $(pwd):/workspace:ro ragedunicorn/luacheck:latest .
+```
+
+Lanes must be configured by an unprivileged uid; passing `--user 0:0` (root) will cause `luacheck -j N` to fail. Any non-root uid works.
 
 ## Tags
 

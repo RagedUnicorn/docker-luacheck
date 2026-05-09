@@ -20,6 +20,8 @@ This Docker image provides a lightweight Luacheck installation on Alpine Linux. 
 - **Luacheck 1.2.0**: Latest stable version
 - **Multi-stage build**: Optimized for minimal final image size
 - **Volume mounting**: Easy file input through `/workspace`
+- **Parallel checking**: Bundled `lanes` package enables `luacheck -j N` for large codebases
+- **Runs as non-root**: Container executes as `nobody` (required by `lanes`, also a security best practice)
 
 ## Quick Start
 
@@ -91,6 +93,27 @@ docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest --ignore 212 --igno
 ```bash
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest --globals love --globals game .
 ```
+
+#### Parallel Checking on Large Codebases
+The image bundles the `lanes` package, so Luacheck's `-j` flag works out of the box:
+
+```bash
+docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest -j 4 .
+```
+
+Set `-j` to the number of CPU cores you want to use. On large codebases this reduces wall-clock time roughly linearly with core count.
+
+## File Permissions
+
+The container runs as the unprivileged `nobody` user (uid 65534). This is required for `lanes` to start (Luacheck's parallel mode), and is also a security best practice.
+
+Files mounted at `/workspace` must be readable by `nobody`. World-readable files (the typical default, mode `644`) work without further configuration. If your files have restrictive permissions and you see `Permission denied` errors, run the container as your own user instead:
+
+```bash
+docker run --rm --user $(id -u):$(id -g) -v $(pwd):/workspace:ro ragedunicorn/luacheck:latest .
+```
+
+Note: Lanes must be configured by an unprivileged uid, so passing `--user 0:0` (root) will cause `luacheck -j N` to fail. Any non-root uid works.
 
 ## Docker Compose Usage
 

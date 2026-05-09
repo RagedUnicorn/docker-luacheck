@@ -56,3 +56,18 @@ commandTests:
     expectedOutput:
       - 'file1.lua'
       - 'file2.lua'
+
+  - name: 'Test parallel checking with -j flag (requires lanes)'
+    setup: [
+      ['sh', '-c', 'echo "print(1)" > /tmp/p1.lua'],
+      ['sh', '-c', 'echo "print(2)" > /tmp/p2.lua'],
+      ['sh', '-c', 'echo "print(3)" > /tmp/p3.lua'],
+      ['sh', '-c', 'echo "print(4)" > /tmp/p4.lua']
+    ]
+    command: 'luacheck'
+    args: ['--no-color', '-j', '2', '/tmp/p1.lua', '/tmp/p2.lua', '/tmp/p3.lua', '/tmp/p4.lua']
+    exitCode: 0
+    expectedOutput:
+      - 'Total: 0 warnings / 0 errors'
+    excludedOutput:
+      - 'lanes'

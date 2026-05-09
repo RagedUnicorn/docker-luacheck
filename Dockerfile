@@ -25,6 +25,9 @@ WORKDIR /tmp/build
 
 RUN luarocks-5.3 install luacheck ${LUACHECK_VERSION}
 
+# Install lanes to enable luacheck's parallel `-j N` mode
+RUN luarocks-5.3 install lanes
+
 ############################################
 # Runtime stage
 ############################################
@@ -53,6 +56,12 @@ RUN apk add --no-cache --update \
 COPY --from=build /usr/local /usr/local
 
 WORKDIR /workspace
+
+# Run as non-root. Lanes (used by luacheck `-j N`) only attempts
+# privileged SCHED_RR scheduling when geteuid() == 0, and Docker's default
+# sandbox denies that with EPERM. Running unprivileged keeps lanes on the
+# default scheduler, which works in any container.
+USER nobody
 
 # Set the entrypoint to luacheck binary
 ENTRYPOINT ["luacheck"]
