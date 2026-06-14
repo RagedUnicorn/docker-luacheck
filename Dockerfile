@@ -1,7 +1,7 @@
 ############################################
 # Luacheck build stage
 ############################################
-FROM alpine:3.23.4 AS build
+FROM alpine:3.24.0 AS build
 
 # renovate: datasource=github-releases depName=lunarmodules/luacheck
 ARG LUACHECK_VERSION=1.2.0
@@ -31,7 +31,7 @@ RUN luarocks-5.3 install lanes
 ############################################
 # Runtime stage
 ############################################
-FROM alpine:3.23.4
+FROM alpine:3.24.0
 
 ARG BUILD_DATE
 ARG VERSION
