@@ -222,6 +222,13 @@ docker run --rm -v $(pwd)/test:/test:ro -v /var/run/docker.sock:/var/run/docker.
    - The `org.opencontainers.image.version` label changes with each build
    - Build date labels are dynamic
 
+4. **Alpine version drift**
+   - Renovate keeps the `FROM` lines, the `org.opencontainers.image.base.name`
+     label, and the matching value in `test/luacheck_metadata_test.yml` in sync
+     via `customManagers`
+   - Only a manual edit that touches one of these without the others can cause
+     drift between the Dockerfile label and the metadata test
+
 **Solution:** Always build and test locally before pushing:
 
 ```bash
@@ -309,7 +316,9 @@ The `test-all` service returns:
 When updating the Docker image:
 
 1. **Luacheck version updates**: Update version tests if output format changes
-2. **Alpine version updates**: Usually no test changes needed
+2. **Alpine version updates**: Handled by Renovate, which bumps the `FROM` lines,
+   the `org.opencontainers.image.base.name` label, and the metadata test value
+   together (no manual change needed)
 3. **New formatter additions**: Add corresponding tests to verify functionality
 4. **Label changes**: Update metadata tests to match new labels
 

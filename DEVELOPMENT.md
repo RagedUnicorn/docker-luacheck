@@ -130,7 +130,11 @@ See [TEST.md](TEST.md) for detailed testing information.
 This project uses [Renovate](https://docs.renovatebot.com/) to automatically manage dependency updates:
 
 - **Luacheck**: Renovate monitors LuaRocks and creates PRs for new versions
-- **Alpine Linux**: Renovate monitors Docker Hub and creates PRs for new Alpine versions
+- **Alpine Linux**: Renovate monitors Docker Hub via the `FROM` lines; regex
+  `customManagers` in `renovate.json` also keep the
+  `org.opencontainers.image.base.name` label and the metadata test value
+  (`test/luacheck_metadata_test.yml`) in sync, so all Alpine references update
+  together in one PR
 
 When Renovate creates a PR:
 
@@ -152,10 +156,14 @@ FROM alpine:3.22.1
 When manually updating versions:
 
 1. Update the `FROM alpine:X.X.X` lines in the Dockerfile (both build and runtime stages)
-2. Update `ARG LUACHECK_VERSION=X.X.X` in the Dockerfile
-3. Test the build thoroughly
-4. Update version numbers in documentation
-5. Run the full test suite
+2. When changing Alpine, also update the `org.opencontainers.image.base.name`
+   label in the Dockerfile and the matching value in
+   `test/luacheck_metadata_test.yml` — all Alpine spots must move together, since
+   they are otherwise only kept in sync automatically by Renovate
+3. Update `ARG LUACHECK_VERSION=X.X.X` in the Dockerfile
+4. Test the build thoroughly
+5. Update version numbers in documentation
+6. Run the full test suite
 
 ### Adding New Features
 
