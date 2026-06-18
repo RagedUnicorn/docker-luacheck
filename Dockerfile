@@ -1,7 +1,7 @@
 ############################################
 # Luacheck build stage
 ############################################
-FROM alpine:3.24.0 AS build
+FROM alpine:3.24.1 AS build
 
 # renovate: datasource=github-releases depName=lunarmodules/luacheck
 ARG LUACHECK_VERSION=1.2.0
@@ -31,7 +31,7 @@ RUN luarocks-5.3 install lanes
 ############################################
 # Runtime stage
 ############################################
-FROM alpine:3.24.0
+FROM alpine:3.24.1
 
 ARG BUILD_DATE
 ARG VERSION
@@ -46,7 +46,7 @@ LABEL org.opencontainers.image.title="Luacheck on Alpine Linux" \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.created="${BUILD_DATE}" \
-      org.opencontainers.image.base.name="docker.io/library/alpine:3.24.0"
+      org.opencontainers.image.base.name="docker.io/library/alpine:3.24.1"
 
 # Install runtime dependencies only
 RUN apk add --no-cache --update \
