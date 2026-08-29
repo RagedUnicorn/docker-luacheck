@@ -1,6 +1,6 @@
 # docker-luacheck
 
-![](./docs/docker_luacheck.png)
+![](./docs/docker_luacheck_banner.svg)
 
 [![Release Build](https://github.com/RagedUnicorn/docker-luacheck/actions/workflows/docker_release.yml/badge.svg)](https://github.com/RagedUnicorn/docker-luacheck/actions/workflows/docker_release.yml)
 [![Test](https://github.com/RagedUnicorn/docker-luacheck/actions/workflows/test.yml/badge.svg)](https://github.com/RagedUnicorn/docker-luacheck/actions/workflows/test.yml)
