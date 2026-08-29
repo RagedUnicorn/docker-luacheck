@@ -1,6 +1,6 @@
 # Luacheck Alpine Docker Image
 
-![Docker Luacheck](https://raw.githubusercontent.com/RagedUnicorn/docker-luacheck/master/docs/docker_luacheck.png)
+![Docker Luacheck](https://raw.githubusercontent.com/RagedUnicorn/docker-luacheck/master/docs/docker_luacheck_banner.png)
 
 A lightweight Luacheck build on Alpine Linux for fast and efficient Lua code linting and static analysis.
 
