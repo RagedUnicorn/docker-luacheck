@@ -52,7 +52,7 @@ docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest [luacheck-options]
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:1.2.0 [luacheck-options]
 
 # Using exact version combination
-docker run -v $(pwd):/workspace ragedunicorn/luacheck:1.2.0-alpine3.22.1-1 [luacheck-options]
+docker run -v $(pwd):/workspace ragedunicorn/luacheck:1.2.0-alpine3.24.1-1 [luacheck-options]
 ```
 
 ### Examples
@@ -229,7 +229,7 @@ This project uses semantic versioning that matches the Docker image contents:
 **Format:** `{luacheck_version}-alpine{alpine_version}-{build_number}`
 
 Examples:
-- `1.2.0-alpine3.22.1-1` - Luacheck 1.2.0 on Alpine 3.22.1, build 1
+- `1.2.0-alpine3.24.1-1` - Luacheck 1.2.0 on Alpine 3.24.1, build 1
 - `latest` - Most recent stable release
 
 For detailed release process and versioning guidelines, see [RELEASE.md](RELEASE.md).

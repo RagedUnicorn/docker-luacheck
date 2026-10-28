@@ -49,13 +49,13 @@ docker compose -f docker-compose.dev.yml run --rm luacheck-dev
 # Inside the container, you can run luacheck manually
 luacheck --version
 luacheck --help
-luacheck /examples/lua/sample.lua
+luacheck lua/sample.lua
 ```
 
 The development mode:
 
 - Overrides the entrypoint to `/bin/sh` for interactive access
-- Mounts the `./examples` directory for testing files
+- Mounts the `./examples` directory at `/workspace` (the working directory) for testing files
 - Sets a custom prompt to identify the development environment
 - Keeps STDIN open and allocates a TTY
 
@@ -69,8 +69,8 @@ docker build -t ragedunicorn/luacheck:dev .
 docker build \
   --build-arg LUACHECK_VERSION=1.2.0 \
   --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-  --build-arg VERSION=1.2.0-alpine3.22.1-1 \
-  -t ragedunicorn/luacheck:1.2.0-alpine3.22.1-1 .
+  --build-arg VERSION=1.2.0-alpine3.24.1-1 \
+  -t ragedunicorn/luacheck:1.2.0-alpine3.24.1-1 .
 
 # Multi-platform build (requires buildx)
 docker buildx build \
@@ -129,7 +129,9 @@ See [TEST.md](TEST.md) for detailed testing information.
 
 This project uses [Renovate](https://docs.renovatebot.com/) to automatically manage dependency updates:
 
-- **Luacheck**: Renovate monitors LuaRocks and creates PRs for new versions
+- **Luacheck** and **Lanes**: Renovate monitors the GitHub releases of
+  `lunarmodules/luacheck` and `LuaLanes/lanes` (`datasource=github-releases`
+  annotations on the `ARG` lines in the `Dockerfile`) and creates PRs for new versions
 - **Alpine Linux**: Renovate monitors Docker Hub via the `FROM` lines; regex
   `customManagers` in `renovate.json` also keep the
   `org.opencontainers.image.base.name` label and the metadata test value

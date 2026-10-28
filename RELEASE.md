@@ -6,8 +6,8 @@ This document describes how to create a new release for the Docker Luacheck proj
 
 ```bash
 # Tag format: v{luacheck_version}-alpine{alpine_version}-{build_number}
-git tag -a v1.2.0-alpine3.22.1-1 -m "v1.2.0-alpine3.22.1-1"
-git push origin v1.2.0-alpine3.22.1-1
+git tag -a v1.2.0-alpine3.24.1-1 -m "v1.2.0-alpine3.24.1-1"
+git push origin v1.2.0-alpine3.24.1-1
 ```
 
 This automatically triggers the release process via GitHub Actions.
@@ -19,10 +19,10 @@ See [README.md](README.md#versioning) for the complete versioning documentation.
 **Format:** `v{luacheck_version}-alpine{alpine_version}-{build_number}`
 
 Examples:
-- `v1.2.0-alpine3.22.1-1` - Initial release
-- `v1.2.0-alpine3.22.1-2` - Rebuild with same versions
-- `v1.2.0-alpine3.22.2-1` - Alpine update (build resets to 1)
-- `v1.3.0-alpine3.22.1-1` - Luacheck update (build resets to 1)
+- `v1.2.0-alpine3.24.1-1` - First build of these versions
+- `v1.2.0-alpine3.24.1-2` - Rebuild with same versions
+- `v1.2.0-alpine3.24.2-1` - Alpine update (build resets to 1)
+- `v1.3.0-alpine3.24.1-1` - Luacheck update (build resets to 1)
 
 ## Release Workflow
 
@@ -99,7 +99,7 @@ Before creating a release:
 
 ### Release didn't trigger
 
-- Ensure tag starts with `v` and follows the format (e.g., `v1.2.0-alpine3.22.1-1`)
+- Ensure tag starts with `v` and follows the format (e.g., `v1.2.0-alpine3.24.1-1`)
 - Check GitHub Actions tab for workflow runs
 - Verify you have push permissions
 
@@ -138,10 +138,10 @@ If automation fails, you can create a release manually:
 
 1. Go to repository's "Releases" page
 2. Click "Create a new release"
-3. Choose your tag (must follow format: `v1.2.0-alpine3.22.1-1`)
+3. Choose your tag (must follow format: `v1.2.0-alpine3.24.1-1`)
 4. Add release notes
 5. Include Docker pull commands:
    ```
-   docker pull ghcr.io/ragedunicorn/docker-luacheck:1.2.0-alpine3.22.1-1
-   docker pull ragedunicorn/luacheck:1.2.0-alpine3.22.1-1
+   docker pull ghcr.io/ragedunicorn/docker-luacheck:1.2.0-alpine3.24.1-1
+   docker pull ragedunicorn/luacheck:1.2.0-alpine3.24.1-1
    ```

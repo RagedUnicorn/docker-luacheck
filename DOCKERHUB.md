@@ -11,7 +11,7 @@ A lightweight Luacheck build on Alpine Linux for fast and efficient Lua code lin
 docker pull ragedunicorn/luacheck:latest
 
 # Or pull specific version
-docker pull ragedunicorn/luacheck:1.2.0-alpine3.22.1-1
+docker pull ragedunicorn/luacheck:1.2.0-alpine3.24.1-1
 
 # Run Luacheck
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest script.lua
@@ -101,10 +101,10 @@ This image uses semantic versioning that includes all component versions:
 
 ### Version Examples
 
-- `1.2.0-alpine3.22.1-1` - Initial release with Luacheck 1.2.0 and Alpine 3.22.1
-- `1.2.0-alpine3.22.1-2` - Rebuild of same versions (bug fixes, optimizations)
-- `1.2.0-alpine3.22.2-1` - Alpine Linux patch update
-- `1.3.0-alpine3.22.1-1` - Luacheck version update
+- `1.2.0-alpine3.24.1-1` - First build of Luacheck 1.2.0 on Alpine 3.24.1
+- `1.2.0-alpine3.24.1-2` - Rebuild of same versions (bug fixes, optimizations)
+- `1.2.0-alpine3.24.2-1` - Alpine Linux patch update
+- `1.3.0-alpine3.24.1-1` - Luacheck version update
 
 When updates are available through automated dependency management, new releases are created with appropriate version tags.
 

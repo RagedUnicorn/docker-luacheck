@@ -45,6 +45,27 @@ commandTests:
       - 'xml'
       - 'testsuite'
 
+  - name: 'Test TAP formatter'
+    setup: [
+      ['sh', '-c', 'echo "local unused = 42" > /tmp/tap_test.lua']
+    ]
+    command: 'luacheck'
+    args: ['--formatter', 'TAP', '/tmp/tap_test.lua']
+    exitCode: 1
+    expectedOutput:
+      - '1\.\.1'
+      - "not ok 1 /tmp/tap_test.lua:1:7: unused variable 'unused'"
+
+  - name: 'Test plain formatter'
+    setup: [
+      ['sh', '-c', 'echo "local unused = 42" > /tmp/plain_test.lua']
+    ]
+    command: 'luacheck'
+    args: ['--formatter', 'plain', '/tmp/plain_test.lua']
+    exitCode: 1
+    expectedOutput:
+      - "(?m)^/tmp/plain_test.lua:1:7: unused variable 'unused'$"
+
   - name: 'Test multiple files'
     setup: [
       ['sh', '-c', 'echo "print(1)" > /tmp/file1.lua'],

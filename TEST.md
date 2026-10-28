@@ -35,7 +35,7 @@ Validates:
 - Basic linting functionality
 - Warning detection (unused variables)
 - Configuration flags (--no-unused)
-- Output formatters (JUnit, TAP, Plain)
+- Output formatters (JUnit, TAP, plain)
 - Multiple file processing
 - Working directory functionality
 
@@ -175,21 +175,21 @@ When testing different versions, always build locally first:
 
 ```bash
 # Build a specific version locally
-docker build -t ragedunicorn/luacheck:1.2.0-alpine3.22.1-1 .
+docker build -t ragedunicorn/luacheck:1.2.0-alpine3.24.1-1 .
 ```
 
 **Linux/macOS:**
 
 ```bash
 # Test that specific version
-LUACHECK_VERSION=1.2.0-alpine3.22.1-1 docker compose -f docker-compose.test.yml run test-all
+LUACHECK_VERSION=1.2.0-alpine3.24.1-1 docker compose -f docker-compose.test.yml run test-all
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
 # Test that specific version
-$env:LUACHECK_VERSION="1.2.0-alpine3.22.1-1"; docker compose -f docker-compose.test.yml run test-all
+$env:LUACHECK_VERSION="1.2.0-alpine3.24.1-1"; docker compose -f docker-compose.test.yml run test-all
 ```
 
 ## Troubleshooting Test Failures
