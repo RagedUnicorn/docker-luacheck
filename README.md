@@ -165,11 +165,17 @@ docker compose -f examples/docker-compose.lint.yml run --rm lint-lua53
 # Generate JUnit report for CI
 docker compose -f examples/docker-compose.ci.yml run --rm ci-junit
 
-# Generate JSON report
-docker compose -f examples/docker-compose.ci.yml run --rm ci-json
+# Generate plain-text report
+docker compose -f examples/docker-compose.ci.yml run --rm ci-plain
+
+# Generate TAP report
+docker compose -f examples/docker-compose.ci.yml run --rm ci-tap
 
 # Check with exit code only
 docker compose -f examples/docker-compose.ci.yml run --rm ci-check
+
+# Check without self-reference warnings
+docker compose -f examples/docker-compose.ci.yml run --rm ci-warnings-only
 ```
 
 ### Environment Variables
