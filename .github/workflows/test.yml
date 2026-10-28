@@ -68,6 +68,7 @@ jobs:
       - name: Test basic Luacheck functionality
         id: basic-tests
         continue-on-error: true
+        shell: bash
         run: |
           echo "::group::🔍 Basic Luacheck Functionality Test"
           {
@@ -75,7 +76,8 @@ jobs:
             docker run --rm ragedunicorn/luacheck:test --version
             echo ""
             echo "Testing Luacheck help..."
-            docker run --rm ragedunicorn/luacheck:test --help | head -20
+            help_output=$(docker run --rm ragedunicorn/luacheck:test --help)
+            echo "$help_output" | head -20
           } 2>&1 | tee test-basic-functionality.log
           echo "::endgroup::"
 
