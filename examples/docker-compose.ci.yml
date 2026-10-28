@@ -5,12 +5,18 @@
 #   docker-compose -f docker-compose.ci.yml run ci-check
 #
 # This will run Luacheck in CI mode with various output formats
+#
+# The report services (ci-junit, ci-plain, ci-tap) write into ./reports. The
+# image runs as `nobody`, which cannot write a bind mount owned by your user,
+# so they run as UID:GID (default 1000:1000). Pass your own ids if they differ:
+#   UID=$(id -u) GID=$(id -g) docker compose -f docker-compose.ci.yml run --rm ci-junit
 
 services:
   # Generate JUnit XML report for CI systems
   ci-junit:
     image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}
     container_name: luacheck-ci-junit
+    user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - ../:/workspace:ro
       - ./reports:/reports
@@ -22,6 +28,7 @@ services:
   ci-plain:
     image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}
     container_name: luacheck-ci-plain
+    user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - ../:/workspace:ro
       - ./reports:/reports
@@ -42,6 +49,7 @@ services:
   ci-tap:
     image: ragedunicorn/luacheck:${LUACHECK_VERSION:-latest}
     container_name: luacheck-ci-tap
+    user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - ../:/workspace:ro
       - ./reports:/reports

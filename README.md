@@ -115,6 +115,22 @@ docker run --rm --user $(id -u):$(id -g) -v $(pwd):/workspace:ro ragedunicorn/lu
 
 Note: Lanes must be configured by an unprivileged uid, so passing `--user 0:0` (root) will cause `luacheck -j N` to fail. Any non-root uid works.
 
+Writing needs the same care: `nobody` cannot create files in a bind mount owned by your user, nor in one Docker created as root because the host directory did not exist. Redirecting output on the host (`docker run ... > report.xml`) needs no extra setup. When the container itself writes into a mounted directory, create the directory first and run as your own user:
+
+```bash
+mkdir -p reports
+docker run --rm --user $(id -u):$(id -g) \
+  -v $(pwd):/workspace:ro -v $(pwd)/reports:/reports \
+  --entrypoint /bin/sh ragedunicorn/luacheck:latest \
+  -c "luacheck --formatter JUnit . > /reports/luacheck-junit.xml"
+```
+
+The report services in `examples/docker-compose.ci.yml` (`ci-junit`, `ci-plain`, `ci-tap`) already do this: they run as `${UID:-1000}:${GID:-1000}` and write into the tracked `examples/reports/` directory. If your ids are not `1000`, pass them explicitly:
+
+```bash
+UID=$(id -u) GID=$(id -g) docker compose -f examples/docker-compose.ci.yml run --rm ci-junit
+```
+
 ## Docker Compose Usage
 
 This repository includes Docker Compose configurations for easier usage and common linting workflows.
