@@ -177,9 +177,7 @@ docker compose -f examples/docker-compose.ci.yml run --rm ci-check
 The compose services support environment variables for customization:
 
 - `LUACHECK_VERSION`: Specify Luacheck image version (default: latest)
-- `LUACHECK_CONFIG`: Path to .luacheckrc file
-- `LUACHECK_GLOBALS`: Comma-separated list of allowed globals
-- See individual compose files for more options
+- Luacheck options such as the config file or allowed globals are not read from environment variables; pass them as arguments (`--config`, `--globals`) or set them in a `.luacheckrc` file
 
 ### Tips
 
@@ -190,7 +188,10 @@ The compose services support environment variables for customization:
 
 2. **Configuration File**: Create a `.luacheckrc` file in your project root for persistent settings
 
-3. **Persistent Settings**: The repository includes a `.env` file with default settings
+3. **Persistent Settings**: The repository includes a `.env` file with default settings. You can modify it to set your preferred versions:
+   ```env
+   LUACHECK_VERSION=1.2.0-alpine3.24.1-1
+   ```
 
 ## Configuration
 
