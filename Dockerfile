@@ -5,6 +5,8 @@ FROM alpine:3.24.3 AS build
 
 # renovate: datasource=github-releases depName=lunarmodules/luacheck
 ARG LUACHECK_VERSION=1.2.0
+# renovate: datasource=github-releases depName=LuaLanes/lanes
+ARG LANES_VERSION=3.17.2
 ARG PREFIX=/opt/luacheck
 
 # Build stage labels
@@ -26,7 +28,7 @@ WORKDIR /tmp/build
 RUN luarocks-5.3 install luacheck ${LUACHECK_VERSION}
 
 # Install lanes to enable luacheck's parallel `-j N` mode
-RUN luarocks-5.3 install lanes
+RUN luarocks-5.3 install lanes ${LANES_VERSION}
 
 ############################################
 # Runtime stage
