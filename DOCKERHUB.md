@@ -17,6 +17,15 @@ docker pull ragedunicorn/luacheck:1.2.0-alpine3.24.1-1
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest script.lua
 ```
 
+On Windows, use the PowerShell form - `${PWD}` **with braces** and the colon
+inside the quotes (without braces PowerShell parses `$PWD:` as a
+scope-qualified variable, as in `$env:PATH`, and rejects the argument):
+
+```powershell
+# Run Luacheck
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest script.lua
+```
+
 ## Features
 
 - 🚀 **Small footprint**: ~15MB runtime image
@@ -41,6 +50,12 @@ docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest script.lua
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest .
 ```
 
+PowerShell:
+
+```powershell
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest .
+```
+
 ### Check specific Lua version compatibility
 
 ```bash
@@ -48,10 +63,24 @@ docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest \
   --std lua53 src/
 ```
 
+PowerShell:
+
+```powershell
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest `
+  --std lua53 src/
+```
+
 ### Ignore specific warnings
 
 ```bash
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest \
+  --no-unused --no-redefined .
+```
+
+PowerShell:
+
+```powershell
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest `
   --no-unused --no-redefined .
 ```
 
@@ -67,6 +96,21 @@ docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest \
   --formatter TAP .
 ```
 
+PowerShell:
+
+```powershell
+# JUnit format for CI systems
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest `
+  --formatter JUnit . > luacheck-report.xml
+
+# TAP format
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest `
+  --formatter TAP .
+```
+
+The `>` redirect writes UTF-8 in PowerShell 7; Windows PowerShell 5.1 writes
+UTF-16, so pipe through `Out-File -Encoding utf8` there instead.
+
 ### Use configuration file
 
 ```bash
@@ -74,10 +118,23 @@ docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest \
   --config .luacheckrc .
 ```
 
+PowerShell:
+
+```powershell
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest `
+  --config .luacheckrc .
+```
+
 ### Parallel checking on large codebases
 
 ```bash
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest -j 4 .
+```
+
+PowerShell:
+
+```powershell
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest -j 4 .
 ```
 
 Set `-j` to the number of CPU cores to use. Backed by the bundled `lanes` package.
@@ -89,6 +146,15 @@ The container runs as `nobody` (uid 65534). Files mounted at `/workspace` must b
 ```bash
 docker run --rm --user $(id -u):$(id -g) \
   -v $(pwd):/workspace:ro ragedunicorn/luacheck:latest .
+```
+
+On Windows hosts this is not needed: Docker Desktop bind mounts do not carry
+Unix file ownership, so `nobody` can read mounted files without `--user` (and
+`id` does not exist in PowerShell). A read-only mount works the same way -
+keep the `:ro` suffix inside the quotes:
+
+```powershell
+docker run --rm -v "${PWD}:/workspace:ro" ragedunicorn/luacheck:latest .
 ```
 
 Lanes must be configured by an unprivileged uid; passing `--user 0:0` (root) will cause `luacheck -j N` to fail. Any non-root uid works.

@@ -36,6 +36,21 @@ docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest myfile.lua
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest .
 ```
 
+On Windows, use the PowerShell form:
+
+```powershell
+# Run Luacheck on a single file
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest myfile.lua
+
+# Run Luacheck on a directory
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest .
+```
+
+Write `${PWD}` **with braces** and keep the colon inside the quotes - without
+braces PowerShell parses `$PWD:` as a scope-qualified variable (as in
+`$env:PATH`) and rejects the argument. See the
+[Windows (PowerShell) notes](#windows-powershell-notes) for details.
+
 For development and building from source, see [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## Usage
@@ -55,6 +70,19 @@ docker run -v $(pwd):/workspace ragedunicorn/luacheck:1.2.0 [luacheck-options]
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:1.2.0-alpine3.24.1-1 [luacheck-options]
 ```
 
+PowerShell:
+
+```powershell
+# Using latest version
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest [luacheck-options]
+
+# Using specific Luacheck version (latest Alpine build)
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:1.2.0 [luacheck-options]
+
+# Using exact version combination
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:1.2.0-alpine3.24.1-1 [luacheck-options]
+```
+
 ### Examples
 
 #### Check a Single File
@@ -62,14 +90,26 @@ docker run -v $(pwd):/workspace ragedunicorn/luacheck:1.2.0-alpine3.24.1-1 [luac
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest myfile.lua
 ```
 
+```powershell
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest myfile.lua
+```
+
 #### Check All Lua Files in Directory
 ```bash
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest .
 ```
 
+```powershell
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest .
+```
+
 #### Check with Custom Configuration
 ```bash
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest --config .luacheckrc .
+```
+
+```powershell
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest --config .luacheckrc .
 ```
 
 #### Generate Report in Different Format
@@ -84,21 +124,49 @@ docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest --formatter JUnit .
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest --formatter json .
 ```
 
+```powershell
+# TAP format
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest --formatter TAP .
+
+# JUnit XML format
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest --formatter JUnit .
+
+# JSON format
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest --formatter json .
+```
+
 #### Ignore Specific Warnings
 ```bash
-docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest --ignore 212 --ignore 213 .
+docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest . --ignore 212 213
+```
+
+```powershell
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest . --ignore 212 213
 ```
 
 #### Set Global Variables
 ```bash
-docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest --globals love --globals game .
+docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest . --globals love game
 ```
+
+```powershell
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest . --globals love game
+```
+
+List the files before `--ignore` and `--globals`: these options take any number
+of values, so a file name placed after them (such as the trailing `.`) is read
+as another warning pattern or global name, and Luacheck stops with
+`missing argument 'files'`.
 
 #### Parallel Checking on Large Codebases
 The image bundles the `lanes` package, so Luacheck's `-j` flag works out of the box:
 
 ```bash
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest -j 4 .
+```
+
+```powershell
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest -j 4 .
 ```
 
 Set `-j` to the number of CPU cores you want to use. On large codebases this reduces wall-clock time roughly linearly with core count.
@@ -131,6 +199,65 @@ The report services in `examples/docker-compose.ci.yml` (`ci-junit`, `ci-plain`,
 UID=$(id -u) GID=$(id -g) docker compose -f examples/docker-compose.ci.yml run --rm ci-junit
 ```
 
+**Windows hosts:** none of this applies. Docker Desktop bind mounts do not carry
+Unix file ownership, so `nobody` can read and write mounted directories without
+`--user` (and `id` does not exist in PowerShell). The compose report services
+work with their default ids. To write a report from inside the container:
+
+```powershell
+New-Item -ItemType Directory -Force reports | Out-Null
+docker run --rm `
+  -v "${PWD}:/workspace:ro" -v "${PWD}/reports:/reports" `
+  --entrypoint /bin/sh ragedunicorn/luacheck:latest `
+  -c 'luacheck --formatter JUnit . > /reports/luacheck-junit.xml'
+```
+
+### Windows (PowerShell) notes
+
+The PowerShell variants above differ from the bash ones in two ways: the
+mount is written `-v "${PWD}:/workspace"` instead of `-v $(pwd):/workspace`,
+and the backtick replaces `\` as the line-continuation character.
+
+The mount spelling matters:
+
+- Pasting the bash form into PowerShell breaks: PowerShell passes
+  `$(pwd):/workspace` (quoted or not) to Docker as two arguments, `C:\path`
+  and `:/workspace`, and Docker stops with `invalid reference format`.
+- `"$PWD:/workspace"` without braces is a parse error: PowerShell reads a
+  colon after a variable as a scope qualifier (as in `$env:PATH`), and `/` is
+  not a valid variable-name character.
+- `"${PWD}:/workspace"` works: the braces end the variable name at `PWD`, the
+  colon stays literal, and Docker splits the resulting `C:\path:/workspace`
+  on the second colon because it recognises the `C:` drive prefix.
+
+Luacheck only reads `/workspace`, so the mount can be read-only. Add the `:ro`
+suffix inside the quotes as well: `-v "${PWD}:/workspace:ro"`.
+
+To check what the container actually sees under `/workspace`, run a
+look-inside command:
+
+```powershell
+docker run --rm -v "${PWD}:/workspace:ro" --entrypoint sh ragedunicorn/luacheck:latest -c 'pwd; ls -la /workspace'
+```
+
+The single quotes keep `pwd; ls -la /workspace` as one literal argument to
+the container's `sh`, so the `;` runs inside the container - unquoted,
+PowerShell would treat `;` as its own statement separator and run
+`ls -la /workspace` on the host. The same applies to the `>` in the report
+example above: inside single quotes it redirects in the container, not on the
+host.
+
+Redirecting a report on the host (`docker run ... > luacheck-report.xml`)
+writes UTF-8 in PowerShell 7. Windows PowerShell 5.1 writes UTF-16 instead,
+which most CI tools reject as JUnit XML; there, pipe through
+`Out-File -Encoding utf8` or write the report from inside the container.
+
+For more complex invocations where PowerShell keeps mangling arguments, the
+[stop-parsing token `--%`](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_parsing#the-stop-parsing-token)
+is an escape hatch: PowerShell passes everything after it verbatim. Nothing
+after `--%` is expanded - including `${PWD}` - so it cannot be combined with
+the mount examples above; none of the examples in this README need it.
+
 ## Docker Compose Usage
 
 This repository includes Docker Compose configurations for easier usage and common linting workflows.
@@ -139,7 +266,7 @@ This repository includes Docker Compose configurations for easier usage and comm
 
 1. Place your Lua files in your project directory
 
-2. Run Luacheck using docker compose:
+2. Run Luacheck using docker compose (the same command works in bash and PowerShell):
 ```bash
 docker compose run --rm luacheck .
 ```
