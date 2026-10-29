@@ -67,21 +67,21 @@ docker build -t ragedunicorn/luacheck:test .
 
 ```bash
 # Run tests against your local build
-LUACHECK_VERSION=test docker compose -f docker-compose.test.yml run test-all
+LUACHECK_TEST_VERSION=test docker compose -f docker-compose.test.yml run test-all
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
 # Run tests against your local build
-$env:LUACHECK_VERSION="test"; docker compose -f docker-compose.test.yml run test-all
+$env:LUACHECK_TEST_VERSION="test"; docker compose -f docker-compose.test.yml run test-all
 ```
 
 **Windows (Command Prompt):**
 
 ```cmd
 # Run tests against your local build
-set LUACHECK_VERSION=test && docker compose -f docker-compose.test.yml run test-all
+set LUACHECK_TEST_VERSION=test && docker compose -f docker-compose.test.yml run test-all
 ```
 
 **Why local testing is important:**
@@ -97,7 +97,7 @@ set LUACHECK_VERSION=test && docker compose -f docker-compose.test.yml run test-
 
 ```bash
 docker pull ragedunicorn/luacheck:latest
-docker compose -f docker-compose.test.yml run test-all
+LUACHECK_TEST_VERSION=latest docker compose -f docker-compose.test.yml run test-all
 ```
 
 **✅ DO THIS - test your local build:**
@@ -106,15 +106,21 @@ Linux/macOS:
 
 ```bash
 docker build -t ragedunicorn/luacheck:test .
-LUACHECK_VERSION=test docker compose -f docker-compose.test.yml run test-all
+LUACHECK_TEST_VERSION=test docker compose -f docker-compose.test.yml run test-all
 ```
 
 Windows (PowerShell):
 
 ```powershell
 docker build -t ragedunicorn/luacheck:test .
-$env:LUACHECK_VERSION="test"; docker compose -f docker-compose.test.yml run test-all
+$env:LUACHECK_TEST_VERSION="test"; docker compose -f docker-compose.test.yml run test-all
 ```
+
+### Why `LUACHECK_TEST_VERSION` and not `LUACHECK_VERSION`
+
+`docker-compose.test.yml` reads its own variable, `LUACHECK_TEST_VERSION`, which defaults to `test`. The runtime compose file and the examples read `LUACHECK_VERSION`, which `.env` pins to `latest`.
+
+Keeping them separate matters. If both files read the same variable, the `latest` value in `.env` silently wins over the `:-test` fallback in the test compose file, and a bare `docker compose -f docker-compose.test.yml run test-all` quietly validates the **published** image instead of the one you just built - exactly the failure mode this document warns about. With two variables, the bare command always tests the local build.
 
 ### Test Execution
 
@@ -124,21 +130,21 @@ Run all tests against your local build:
 
 ```bash
 # Ensure you've built locally first!
-LUACHECK_VERSION=test docker compose -f docker-compose.test.yml run test-all
+LUACHECK_TEST_VERSION=test docker compose -f docker-compose.test.yml run test-all
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
 # Ensure you've built locally first!
-$env:LUACHECK_VERSION="test"; docker compose -f docker-compose.test.yml run test-all
+$env:LUACHECK_TEST_VERSION="test"; docker compose -f docker-compose.test.yml run test-all
 ```
 
 **Windows (Command Prompt):**
 
 ```cmd
 # Ensure you've built locally first!
-set LUACHECK_VERSION=test && docker compose -f docker-compose.test.yml run test-all
+set LUACHECK_TEST_VERSION=test && docker compose -f docker-compose.test.yml run test-all
 ```
 
 Run specific test categories:
@@ -147,26 +153,26 @@ Run specific test categories:
 
 ```bash
 # File structure and library tests
-LUACHECK_VERSION=test docker compose -f docker-compose.test.yml up container-test
+LUACHECK_TEST_VERSION=test docker compose -f docker-compose.test.yml up container-test
 
 # Command execution and linting tests
-LUACHECK_VERSION=test docker compose -f docker-compose.test.yml up container-test-command
+LUACHECK_TEST_VERSION=test docker compose -f docker-compose.test.yml up container-test-command
 
 # Metadata and label tests
-LUACHECK_VERSION=test docker compose -f docker-compose.test.yml up container-test-metadata
+LUACHECK_TEST_VERSION=test docker compose -f docker-compose.test.yml up container-test-metadata
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
 # File structure and library tests
-$env:LUACHECK_VERSION="test"; docker compose -f docker-compose.test.yml up container-test
+$env:LUACHECK_TEST_VERSION="test"; docker compose -f docker-compose.test.yml up container-test
 
 # Command execution and linting tests
-$env:LUACHECK_VERSION="test"; docker compose -f docker-compose.test.yml up container-test-command
+$env:LUACHECK_TEST_VERSION="test"; docker compose -f docker-compose.test.yml up container-test-command
 
 # Metadata and label tests
-$env:LUACHECK_VERSION="test"; docker compose -f docker-compose.test.yml up container-test-metadata
+$env:LUACHECK_TEST_VERSION="test"; docker compose -f docker-compose.test.yml up container-test-metadata
 ```
 
 ### Testing Different Versions
@@ -182,14 +188,14 @@ docker build -t ragedunicorn/luacheck:1.2.0-alpine3.24.1-1 .
 
 ```bash
 # Test that specific version
-LUACHECK_VERSION=1.2.0-alpine3.24.1-1 docker compose -f docker-compose.test.yml run test-all
+LUACHECK_TEST_VERSION=1.2.0-alpine3.24.1-1 docker compose -f docker-compose.test.yml run test-all
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
 # Test that specific version
-$env:LUACHECK_VERSION="1.2.0-alpine3.24.1-1"; docker compose -f docker-compose.test.yml run test-all
+$env:LUACHECK_TEST_VERSION="1.2.0-alpine3.24.1-1"; docker compose -f docker-compose.test.yml run test-all
 ```
 
 ## Troubleshooting Test Failures
@@ -211,7 +217,7 @@ docker run --rm -v $(pwd)/test:/test:ro -v /var/run/docker.sock:/var/run/docker.
 
 1. **Testing remote images instead of local builds**
    - Remote images (Docker Hub, GHCR) have labels overridden by CI/CD
-   - Always test your local builds with `LUACHECK_VERSION=test`
+   - Always test your local builds with `LUACHECK_TEST_VERSION=test`
 
 2. **Label value mismatches**
    - CI/CD systems may capitalize values (e.g., "RagedUnicorn" vs "ragedunicorn")
@@ -238,13 +244,13 @@ docker build -t ragedunicorn/luacheck:test .
 Linux/macOS:
 
 ```bash
-LUACHECK_VERSION=test docker compose -f docker-compose.test.yml run test-all
+LUACHECK_TEST_VERSION=test docker compose -f docker-compose.test.yml run test-all
 ```
 
 Windows (PowerShell):
 
 ```powershell
-$env:LUACHECK_VERSION="test"; docker compose -f docker-compose.test.yml run test-all
+$env:LUACHECK_TEST_VERSION="test"; docker compose -f docker-compose.test.yml run test-all
 ```
 
 ### Permission Errors
@@ -303,7 +309,7 @@ Manual integration example:
 ```yaml
 - name: Run Container Structure Tests
   env:
-    LUACHECK_VERSION: test
+    LUACHECK_TEST_VERSION: test
   run: docker compose -f docker-compose.test.yml run test-all
 ```
 
