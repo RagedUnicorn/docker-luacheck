@@ -10,8 +10,8 @@ A lightweight Luacheck build on Alpine Linux for fast and efficient Lua code lin
 # Pull latest version
 docker pull ragedunicorn/luacheck:latest
 
-# Or pull specific version
-docker pull ragedunicorn/luacheck:1.2.0-alpine3.24.1-1
+# Or pull specific version (see the Tags tab for the available versions)
+docker pull ragedunicorn/luacheck:<luacheck-version>-alpine<alpine-version>-<build>
 
 # Run Luacheck
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest script.lua
@@ -29,7 +29,7 @@ docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest script.lua
 ## Features
 
 - 🚀 **Small footprint**: ~15MB runtime image
-- 📦 **Luacheck 1.2.0**: Latest stable version installed via LuaRocks
+- 📦 **Luacheck**: Latest stable version installed via LuaRocks
 - 🔍 **Comprehensive analysis**: Detects undefined globals, unused variables, unreachable code, and more
 - 🏗️ **Multi-platform**: Supports linux/amd64 and linux/arm64
 - ⚡ **Fast**: Pure Lua implementation with no external dependencies
@@ -167,10 +167,16 @@ This image uses semantic versioning that includes all component versions:
 
 ### Version Examples
 
-- `1.2.0-alpine3.24.1-1` - First build of Luacheck 1.2.0 on Alpine 3.24.1
-- `1.2.0-alpine3.24.1-2` - Rebuild of same versions (bug fixes, optimizations)
-- `1.2.0-alpine3.24.2-1` - Alpine Linux patch update
-- `1.3.0-alpine3.24.1-1` - Luacheck version update
+`X.Y.Z` is the Luacheck version, `A.B.C` the Alpine version:
+
+- `X.Y.Z-alpineA.B.C-1` - First build of Luacheck X.Y.Z on Alpine A.B.C
+- `X.Y.Z-alpineA.B.C-2` - Rebuild of same versions (bug fixes, optimizations)
+- `X.Y.Z-alpineA.B.D-1` - Alpine Linux patch update
+- `X.Y+1.0-alpineA.B.C-1` - Luacheck version update (build resets to 1)
+- `X.Y.Z` - Most recent build of Luacheck X.Y.Z
+- `latest` - Most recent stable release
+
+The available versions are listed in the [Tags tab](https://hub.docker.com/r/ragedunicorn/luacheck/tags).
 
 When updates are available through automated dependency management, new releases are created with appropriate version tags.
 

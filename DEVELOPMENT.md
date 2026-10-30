@@ -65,18 +65,26 @@ The development mode:
 # Basic build
 docker build -t ragedunicorn/luacheck:dev .
 
-# Build with specific versions
+# Build with version metadata (Luacheck and Alpine come from the Dockerfile)
 docker build \
-  --build-arg LUACHECK_VERSION=1.2.0 \
   --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-  --build-arg VERSION=1.2.0-alpine3.24.1-1 \
-  -t ragedunicorn/luacheck:1.2.0-alpine3.24.1-1 .
+  --build-arg VERSION=dev \
+  -t ragedunicorn/luacheck:dev .
+
+# Build a different Luacheck version than the Dockerfile default
+docker build \
+  --build-arg LUACHECK_VERSION=<luacheck-version> \
+  -t ragedunicorn/luacheck:dev .
 
 # Multi-platform build (requires buildx)
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -t ragedunicorn/luacheck:dev .
 ```
+
+The Luacheck version is the `LUACHECK_VERSION` default in the `Dockerfile`
+and the Alpine version is in its `FROM` lines. Renovate keeps both current, so the
+docs do not repeat them.
 
 ### 3. Testing Your Changes
 
@@ -145,14 +153,15 @@ When Renovate creates a PR:
 3. Test the build locally if it's a major version update
 4. Merge the PR if everything looks good
 
-Manual version updates are rarely needed, but if required:
+Manual version updates are rarely needed, but if required (see the `Dockerfile`
+for the current values):
 
 ```dockerfile
 # Luacheck version
-ARG LUACHECK_VERSION=1.2.0
+ARG LUACHECK_VERSION=<luacheck-version>
 
 # Alpine base image
-FROM alpine:3.22.1
+FROM alpine:<alpine-version>
 ```
 
 When manually updating versions:
@@ -164,7 +173,7 @@ When manually updating versions:
    they are otherwise only kept in sync automatically by Renovate
 3. Update `ARG LUACHECK_VERSION=X.X.X` in the Dockerfile
 4. Test the build thoroughly
-5. Update version numbers in documentation
+5. No documentation update is needed - the docs carry no concrete versions
 6. Run the full test suite
 
 ### Adding New Features

@@ -181,21 +181,21 @@ When testing different versions, always build locally first:
 
 ```bash
 # Build a specific version locally
-docker build -t ragedunicorn/luacheck:1.2.0-alpine3.24.1-1 .
+docker build -t ragedunicorn/luacheck:<luacheck-version>-alpine<alpine-version>-<build> .
 ```
 
 **Linux/macOS:**
 
 ```bash
 # Test that specific version
-LUACHECK_TEST_VERSION=1.2.0-alpine3.24.1-1 docker compose -f docker-compose.test.yml run test-all
+LUACHECK_TEST_VERSION=<luacheck-version>-alpine<alpine-version>-<build> docker compose -f docker-compose.test.yml run test-all
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
 # Test that specific version
-$env:LUACHECK_TEST_VERSION="1.2.0-alpine3.24.1-1"; docker compose -f docker-compose.test.yml run test-all
+$env:LUACHECK_TEST_VERSION="<luacheck-version>-alpine<alpine-version>-<build>"; docker compose -f docker-compose.test.yml run test-all
 ```
 
 ## Troubleshooting Test Failures

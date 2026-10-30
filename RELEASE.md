@@ -6,8 +6,10 @@ This document describes how to create a new release for the Docker Luacheck proj
 
 ```bash
 # Tag format: v{luacheck_version}-alpine{alpine_version}-{build_number}
-git tag -a v1.2.0-alpine3.24.1-1 -m "v1.2.0-alpine3.24.1-1"
-git push origin v1.2.0-alpine3.24.1-1
+# Take the versions from the Dockerfile (LUACHECK_VERSION and the FROM lines)
+TAG=v<luacheck-version>-alpine<alpine-version>-<build>
+git tag -a "$TAG" -m "$TAG"
+git push origin "$TAG"
 ```
 
 This automatically triggers the release process via GitHub Actions.
@@ -18,11 +20,11 @@ See [README.md](README.md#versioning) for the complete versioning documentation.
 
 **Format:** `v{luacheck_version}-alpine{alpine_version}-{build_number}`
 
-Examples:
-- `v1.2.0-alpine3.24.1-1` - First build of these versions
-- `v1.2.0-alpine3.24.1-2` - Rebuild with same versions
-- `v1.2.0-alpine3.24.2-1` - Alpine update (build resets to 1)
-- `v1.3.0-alpine3.24.1-1` - Luacheck update (build resets to 1)
+Examples (`X.Y.Z` is the Luacheck version, `A.B.C` the Alpine version):
+- `vX.Y.Z-alpineA.B.C-1` - First build of Luacheck X.Y.Z on Alpine A.B.C
+- `vX.Y.Z-alpineA.B.C-2` - Rebuild with same versions
+- `vX.Y.Z-alpineA.B.D-1` - Alpine update (build resets to 1)
+- `vX.Y+1.0-alpineA.B.C-1` - Luacheck update (build resets to 1)
 
 ## Release Workflow
 
@@ -58,15 +60,19 @@ Create a new release when:
 
 ### Update Docker Hub Documentation
 
-After creating a release, manually update the Docker Hub repository description:
+`DOCKERHUB.md` is the source of truth for the Docker Hub repository
+description. It deliberately contains no concrete versions (readers find those
+in the Tags tab), so a release alone does not require a description update.
+Only when `DOCKERHUB.md` changed since the last sync:
 
 1. Go to [Docker Hub](https://hub.docker.com/r/ragedunicorn/luacheck)
 2. Click "Manage Repository" → "Description"
 3. Copy the contents of `DOCKERHUB.md`
-4. Update any version numbers in the examples to match the latest release
-5. Save the changes
+4. Save the changes
 
-**Note**: The `DOCKERHUB.md` file is maintained in the repository as the source of truth for Docker Hub documentation.
+**Note**: the sync stays manual on purpose. Docker Hub only offers an
+undocumented endpoint for description updates, and it needs a separate
+Read/Write/Delete access token.
 
 ## Best Practices
 
@@ -101,7 +107,7 @@ Before creating a release:
 
 ### Release didn't trigger
 
-- Ensure tag starts with `v` and follows the format (e.g., `v1.2.0-alpine3.24.1-1`)
+- Ensure tag starts with `v` and follows the format (e.g., `vX.Y.Z-alpineA.B.C-N`)
 - Check GitHub Actions tab for workflow runs
 - Verify you have push permissions
 
@@ -140,10 +146,10 @@ If automation fails, you can create a release manually:
 
 1. Go to repository's "Releases" page
 2. Click "Create a new release"
-3. Choose your tag (must follow format: `v1.2.0-alpine3.24.1-1`)
+3. Choose your tag (must follow format: `vX.Y.Z-alpineA.B.C-N`)
 4. Add release notes
-5. Include Docker pull commands:
+5. Include Docker pull commands (the tag without the leading `v`):
    ```
-   docker pull ghcr.io/ragedunicorn/docker-luacheck:1.2.0-alpine3.24.1-1
-   docker pull ragedunicorn/luacheck:1.2.0-alpine3.24.1-1
+   docker pull ghcr.io/ragedunicorn/docker-luacheck:<tag>
+   docker pull ragedunicorn/luacheck:<tag>
    ```

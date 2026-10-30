@@ -17,7 +17,7 @@ This Docker image provides a lightweight Luacheck installation on Alpine Linux. 
 ## Features
 
 - **Small footprint**: ~15MB runtime image using Alpine Linux
-- **Luacheck 1.2.0**: Latest stable version
+- **Luacheck**: Latest stable version
 - **Multi-stage build**: Optimized for minimal final image size
 - **Volume mounting**: Easy file input through `/workspace`
 - **Parallel checking**: Bundled `lanes` package enables `luacheck -j N` for large codebases
@@ -64,10 +64,10 @@ The container uses Luacheck as the entrypoint, so any Luacheck parameters can be
 docker run -v $(pwd):/workspace ragedunicorn/luacheck:latest [luacheck-options]
 
 # Using specific Luacheck version (latest Alpine build)
-docker run -v $(pwd):/workspace ragedunicorn/luacheck:1.2.0 [luacheck-options]
+docker run -v $(pwd):/workspace ragedunicorn/luacheck:<luacheck-version> [luacheck-options]
 
 # Using exact version combination
-docker run -v $(pwd):/workspace ragedunicorn/luacheck:1.2.0-alpine3.24.1-1 [luacheck-options]
+docker run -v $(pwd):/workspace ragedunicorn/luacheck:<luacheck-version>-alpine<alpine-version>-<build> [luacheck-options]
 ```
 
 PowerShell:
@@ -77,11 +77,14 @@ PowerShell:
 docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:latest [luacheck-options]
 
 # Using specific Luacheck version (latest Alpine build)
-docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:1.2.0 [luacheck-options]
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:<luacheck-version> [luacheck-options]
 
 # Using exact version combination
-docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:1.2.0-alpine3.24.1-1 [luacheck-options]
+docker run -v "${PWD}:/workspace" ragedunicorn/luacheck:<luacheck-version>-alpine<alpine-version>-<build> [luacheck-options]
 ```
+
+Available tags are listed on [Docker Hub](https://hub.docker.com/r/ragedunicorn/luacheck/tags) and in the
+[GitHub releases](https://github.com/RagedUnicorn/docker-luacheck/releases).
 
 ### Examples
 
@@ -323,7 +326,7 @@ The compose services support environment variables for customization:
 
 3. **Persistent Settings**: The repository includes a `.env` file with default settings. You can modify it to set your preferred versions:
    ```env
-   LUACHECK_VERSION=1.2.0-alpine3.24.1-1
+   LUACHECK_VERSION=<luacheck-version>-alpine<alpine-version>-<build>
    ```
 
 ## Configuration
@@ -355,9 +358,12 @@ This project uses semantic versioning that matches the Docker image contents:
 
 **Format:** `{luacheck_version}-alpine{alpine_version}-{build_number}`
 
-Examples:
-- `1.2.0-alpine3.24.1-1` - Luacheck 1.2.0 on Alpine 3.24.1, build 1
+Examples (`X.Y.Z` is the Luacheck version, `A.B.C` the Alpine version):
+- `X.Y.Z-alpineA.B.C-1` - Luacheck X.Y.Z on Alpine A.B.C, build 1
+- `X.Y.Z` - Most recent build of Luacheck X.Y.Z
 - `latest` - Most recent stable release
+
+The current tags are listed on [Docker Hub](https://hub.docker.com/r/ragedunicorn/luacheck/tags).
 
 For detailed release process and versioning guidelines, see [RELEASE.md](RELEASE.md).
 
