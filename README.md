@@ -371,6 +371,9 @@ For detailed release process and versioning guidelines, see [RELEASE.md](RELEASE
 
 Released images are signed with [cosign](https://docs.sigstore.dev/) keyless signing and carry SBOM and provenance attestations.
 
+Verification requires cosign v3 or later: the release workflow signs with cosign v3, whose signatures cosign v2 does
+not find (it reports `no signatures found`).
+
 ```bash
 # Verify the signature (works for both ghcr.io/ragedunicorn/docker-luacheck and ragedunicorn/luacheck)
 cosign verify ragedunicorn/luacheck:latest \
